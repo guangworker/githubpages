@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>倉頡字根練習 (中翻英)</title>
+    <style>
+        body { font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; text-align: center; padding: 40px; background: #eceff1; }
+        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: inline-block; min-width: 300px; }
+        .question { font-size: 100px; margin: 20px 0; color: #1a73e8; font-weight: 900; }
+        .input-box { margin-bottom: 20px; }
+        input { font-size: 32px; width: 60px; text-align: center; border: 3px solid #1a73e8; border-radius: 10px; outline: none; text-transform: uppercase; }
+        .hint { color: #666; font-size: 14px; margin-top: 10px; }
+        #feedback { font-weight: bold; height: 30px; margin-top: 15px; }
+        .stats-panel { margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; color: #555; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>請輸入對應的英文字母</h2>
+    <div class="question" id="displayChar">?</div>
+    
+    <div class="input-box">
+        <input type="text" id="userInput" maxlength="1" autofocus autocomplete="off">
+    </div>
+
+    <div id="feedback"></div>
+
+    <div class="stats-panel">
+        正確次數: <span id="correctCnt">0</span> | 
+        準確率: <span id="accPercent">100</span>%
+    </div>
+    <div class="hint">提示：直接在鍵盤按下字母即可</div>
+</div>
+
+<script>
+    // 倉頡資料表 (Cangjie Data Mapping)
+    const cjData = [
+        { char: '日', key: 'A' }, { char: '月', key: 'B' }, { char: '金', key: 'C' },
+        { char: '木', key: 'D' }, { char: '水', key: 'E' }, { char: '火', key: 'F' },
+        { char: '土', key: 'G' }, { char: '竹', key: 'H' }, { char: '戈', key: 'I' },
+        { char: '十', key: 'J' }, { char: '大', key: 'K' }, { char: '中', key: 'L' },
+        { char: '一', key: 'M' }, { char: '弓', key: 'N' }, { char: '人', key: 'O' },
+        { char: '心', key: 'P' }, { char: '手', key: 'Q' }, { char: '口', key: 'R' },
+        { char: '尸', key: 'S' }, { char: '廿', key: 'T' }, { char: '山', key: 'U' },
+        { char: '女', key: 'V' }, { char: '田', key: 'W' }, { char: '卜', key: 'Y' }
+    ];
+
+    let currentItem = {};
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    const displayElement = document.getElementById('displayChar');
+    const inputElement = document.getElementById('userInput');
+    const feedbackElement = document.getElementById('feedback');
+    const correctDisplay = document.getElementById('correctCnt');
+    const accDisplay = document.getElementById('accPercent');
+
+    function refresh() {
+        currentItem = cjData[Math.floor(Math.random() * cjData.length)];
+        displayElement.innerText = currentItem.char;
+        inputElement.value = '';
+        inputElement.focus();
+    }
+
+    inputElement.addEventListener('input', (e) => {
+        const inputKey = e.target.value.toUpperCase();
+        if (!inputKey) return;
+
+        totalAttempts++;
+        if (inputKey === currentItem.key) {
+            correctAttempts++;
+            feedbackElement.innerText = "Bingo! ✅";
+            feedbackElement.style.color = "#28a745";
+            setTimeout(refresh, 400);
+        } else {
+            feedbackElement.innerText = `更正：${currentItem.char} 的按鍵是 [ ${currentItem.key} ]`;
+            feedbackElement.style.color = "#dc3545";
+            inputElement.value = '';
+        }
+
+        // 更新數據
+        correctDisplay.innerText = correctAttempts;
+        accDisplay.innerText = ((correctAttempts / totalAttempts) * 100).toFixed(1);
+    });
+
+    // 初始化觸發
+    refresh();
+</script>
+
+</body>
+</html>
